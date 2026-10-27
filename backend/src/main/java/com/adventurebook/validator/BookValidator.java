@@ -1,5 +1,9 @@
-package com.adventurebook.book;
+package com.adventurebook.validator;
 
+import com.adventurebook.model.Book;
+import com.adventurebook.model.Option;
+import com.adventurebook.model.Section;
+import com.adventurebook.model.SectionType;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayDeque;

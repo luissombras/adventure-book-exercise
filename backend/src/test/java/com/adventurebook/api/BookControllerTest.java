@@ -1,4 +1,4 @@
-package com.adventurebook.book;
+package com.adventurebook.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

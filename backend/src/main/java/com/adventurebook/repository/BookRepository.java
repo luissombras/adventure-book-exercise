@@ -1,5 +1,6 @@
-package com.adventurebook.book;
+package com.adventurebook.repository;
 
+import com.adventurebook.model.Book;
 import org.springframework.stereotype.Repository;
 
 import java.util.Comparator;

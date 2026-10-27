@@ -1,5 +1,8 @@
-package com.adventurebook.book;
+package com.adventurebook.repository;
 
+import com.adventurebook.model.Book;
+import com.adventurebook.model.Consequence;
+import com.adventurebook.model.ConsequenceType;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
 

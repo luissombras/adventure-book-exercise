@@ -1,5 +1,11 @@
-package com.adventurebook.book;
+package com.adventurebook.validator;
 
+import com.adventurebook.model.Book;
+import com.adventurebook.model.Difficulty;
+import com.adventurebook.model.Option;
+import com.adventurebook.model.Section;
+import com.adventurebook.model.SectionType;
+import com.adventurebook.repository.BookLoader;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -8,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.adventurebook.book.SectionType.BEGIN;
-import static com.adventurebook.book.SectionType.END;
-import static com.adventurebook.book.SectionType.NODE;
+import static com.adventurebook.model.SectionType.BEGIN;
+import static com.adventurebook.model.SectionType.END;
+import static com.adventurebook.model.SectionType.NODE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 

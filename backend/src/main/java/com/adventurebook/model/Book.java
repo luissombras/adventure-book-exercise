@@ -1,4 +1,4 @@
-package com.adventurebook.book;
+package com.adventurebook.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

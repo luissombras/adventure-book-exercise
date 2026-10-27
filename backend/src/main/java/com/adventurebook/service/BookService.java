@@ -1,5 +1,8 @@
-package com.adventurebook.book;
+package com.adventurebook.service;
 
+import com.adventurebook.dto.BookSummary;
+import com.adventurebook.repository.BookRepository;
+import com.adventurebook.validator.BookValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

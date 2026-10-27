@@ -1,5 +1,6 @@
-package com.adventurebook.book;
+package com.adventurebook.repository;
 
+import com.adventurebook.model.Book;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

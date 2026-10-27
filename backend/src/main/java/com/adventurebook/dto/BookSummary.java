@@ -1,4 +1,9 @@
-package com.adventurebook.book;
+package com.adventurebook.dto;
+
+import com.adventurebook.model.Book;
+import com.adventurebook.model.Difficulty;
+import com.adventurebook.model.Section;
+import com.adventurebook.validator.ValidationResult;
 
 import java.util.List;
 
@@ -12,7 +17,7 @@ public record BookSummary(
         boolean valid,
         List<String> errors) {
 
-    static BookSummary of(Book book, ValidationResult validation) {
+    public static BookSummary of(Book book, ValidationResult validation) {
         return new BookSummary(
                 book.id(),
                 book.title(),
