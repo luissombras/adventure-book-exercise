@@ -29,6 +29,19 @@ class GameControllerTest {
                 .hasHeader("Location", "/api/games/" + gameId(result));
         assertThat(result).bodyJson().extractingPath("$.section.id").isEqualTo(1);
         assertThat(result).bodyJson().extractingPath("$.status").isEqualTo("IN_PROGRESS");
+        assertThat(result).bodyJson().extractingPath("$.health").isEqualTo(10);
+        assertThat(result).bodyJson().extractingPath("$.consequence").isNull();
+    }
+
+    @Test
+    void reportsTheConsequenceOfAChoice() {
+        String gameId = gameId(start("the-prisoner"));
+        choose(gameId, "{\"optionIndex\": 1}");
+
+        var body = assertThat(choose(gameId, "{\"optionIndex\": 0}")).hasStatusOk().bodyJson();
+
+        body.extractingPath("$.health").isEqualTo(4);
+        body.extractingPath("$.consequence.healthChange").isEqualTo(-6);
     }
 
     @Test
