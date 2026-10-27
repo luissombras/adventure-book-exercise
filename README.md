@@ -33,6 +33,11 @@ cd frontend && npm test
 | Method | Path | Description |
 |---|---|---|
 | GET | `/api/books` | Library, with each book's validation errors. |
+| POST | `/api/games` `{"bookId"}` | Start a game at the book's beginning. `201`, or `404` / `422` (book unknown / not playable). |
+| GET | `/api/games/{id}` | Current state of a game. |
+| POST | `/api/games/{id}/choices` `{"optionIndex"}` | Take an option of the current section (0-based). `409` if the section has no such option or the game is over. |
+
+Errors use Problem Details (`application/problem+json`); a `422` also lists the book's validation errors.
 
 ## Decisions
 
@@ -65,3 +70,12 @@ is logged and skipped.
 **Card details.** The JSON files have no description, so the card shows the text of the opening section. The
 section count replaces the "chapters" shown in the design. Reading time and tags aren't in the data, so they're
 left out, and so is the category filter: no book has a category.
+
+**The game runs on the server.** The client only sends which option was picked; the server checks it against the
+current section and decides where the player goes. That keeps the rules in one place and testable in Java, and it
+is where health and consequences (objective 3) and saved progress (objective 4) will plug in. Games are kept in
+memory, so they are lost when the backend restarts, and refreshing the game page starts a new game until saving
+exists.
+
+**Sections have no titles in the data**, so the game screen shows the section number instead of the titles in the
+design.

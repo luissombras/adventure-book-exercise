@@ -1,0 +1,19 @@
+@let s = section();
+<article class="story">
+  <h2 #heading class="story__title" tabindex="-1">Section {{ s.id }}</h2>
+  <p class="story__text">{{ s.text }}</p>
+
+  @if (s.options.length) {
+    <h3 class="story__question">What do you choose?</h3>
+    <ol class="choices">
+      @for (option of s.options; track $index) {
+        <li>
+          <button type="button" class="choice" [disabled]="disabled()" (click)="choose.emit($index)">
+            <span class="choice__number">{{ $index + 1 }}</span>
+            {{ option }}
+          </button>
+        </li>
+      }
+    </ol>
+  }
+</article>

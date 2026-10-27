@@ -1,0 +1,36 @@
+<app-game-header [bookTitle]="game()?.bookTitle" />
+
+<main class="game">
+  @if (problem(); as problem) {
+    <div class="notice" role="alert">
+      <p class="notice__detail">{{ problem.detail }}</p>
+      @if (problem.errors?.length) {
+        <ul>
+          @for (error of problem.errors; track error) {
+            <li>{{ error }}</li>
+          }
+        </ul>
+      }
+      @if (!game()) {
+        <a class="notice__link" routerLink="/">Pick another adventure</a>
+      }
+    </div>
+  }
+
+  @if (game(); as game) {
+    <app-story-section [section]="game.section" [disabled]="busy()" (choose)="choose($event)" />
+
+    @if (game.status === 'FINISHED') {
+      <section class="ending">
+        <h2 class="ending__title">The End</h2>
+        <p>You reached an ending of {{ game.bookTitle }}.</p>
+        <div class="ending__actions">
+          <button type="button" class="quest-button" [disabled]="busy()" (click)="restart()">Play again</button>
+          <a class="ending__link" routerLink="/">Back to Library</a>
+        </div>
+      </section>
+    }
+  } @else if (busy()) {
+    <p class="loading">Opening the book...</p>
+  }
+</main>
