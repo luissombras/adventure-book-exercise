@@ -87,6 +87,8 @@ so two requests for the same game can't both act on the same section.
 between 0 and 10: the brief only gives the starting value, and a cap keeps potions from stacking up. At 0 the player
 dies on the section where they made the choice, without moving to the option's section, since that text assumes they
 survived. Death wins over an ending: losing the last health point on the way to an `END` section is still death.
+The game reports the change that was actually applied, so a potion at full health shows no gain and a fatal blow
+shows only the health that was left.
 
 **Sections have no titles in the data**, so the game screen shows the section number instead of the titles in the
 design.
