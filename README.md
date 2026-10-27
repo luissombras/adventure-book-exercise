@@ -38,7 +38,11 @@ cd frontend && npm test
 
 **Book validation.** A book is invalid when it has no beginning or more than one, has no ending, has an option
 leading to a section that doesn't exist, or has a non-ending section without options. For that last rule only
-sections reachable from the beginning are considered: a dead section nobody can get to can't block a game.
+sections reachable from the beginning are considered: a dead section nobody can get to can't block a game. Two
+sections with the same id are also an error, since an option pointing at that id would be ambiguous.
+
+Validation is a single O(sections + options) pass plus a graph traversal, and each book is validated once and
+cached, since books don't change after loading.
 
 **Invalid books stay in the library**, marked as unplayable with the reasons, instead of being hidden.
 

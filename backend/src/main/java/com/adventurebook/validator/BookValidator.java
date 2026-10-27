@@ -9,11 +9,12 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -21,8 +22,16 @@ public class BookValidator {
 
     public ValidationResult validate(Book book) {
         List<String> errors = new ArrayList<>();
-        Map<Integer, Section> sectionsById = book.sections().stream()
-                .collect(Collectors.toMap(Section::id, Function.identity(), (first, duplicate) -> first));
+        Map<Integer, Section> sectionsById = new HashMap<>();
+        Set<Integer> duplicateIds = new LinkedHashSet<>();
+        for (Section section : book.sections()) {
+            if (sectionsById.putIfAbsent(section.id(), section) != null) {
+                duplicateIds.add(section.id());
+            }
+        }
+        for (int id : duplicateIds) {
+            errors.add("Section " + id + " is defined more than once");
+        }
 
         List<Section> beginnings = book.sections().stream()
                 .filter(s -> s.type() == SectionType.BEGIN)
@@ -57,15 +66,16 @@ public class BookValidator {
 
     private Set<Integer> reachableFrom(List<Section> starts, Map<Integer, Section> sectionsById) {
         Set<Integer> visited = new HashSet<>();
-        Deque<Section> toVisit = new ArrayDeque<>(starts);
-        while (!toVisit.isEmpty()) {
-            Section current = toVisit.pop();
-            if (!visited.add(current.id())) {
-                continue;
+        Deque<Section> toVisit = new ArrayDeque<>();
+        for (Section start : starts) {
+            if (visited.add(start.id())) {
+                toVisit.push(start);
             }
-            for (Option option : current.options()) {
+        }
+        while (!toVisit.isEmpty()) {
+            for (Option option : toVisit.pop().options()) {
                 Section next = sectionsById.get(option.gotoId());
-                if (next != null) {
+                if (next != null && visited.add(next.id())) {
                     toVisit.push(next);
                 }
             }

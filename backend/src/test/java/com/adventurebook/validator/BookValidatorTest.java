@@ -93,6 +93,30 @@ class BookValidatorTest {
     }
 
     @Test
+    void duplicateSectionIdIsInvalid() {
+        ValidationResult result = validator.validate(book(
+                section(1, BEGIN, 2),
+                section(2, END),
+                section(2, NODE, 1),
+                section(2, END)));
+
+        assertThat(result.errors()).containsExactly("Section 2 is defined more than once");
+    }
+
+    @Test
+    void sectionsReachedByManyPathsAndCyclesAreCheckedOnce() {
+        ValidationResult result = validator.validate(book(
+                section(1, BEGIN, 2, 3, 4),
+                section(2, NODE, 3, 4, 1),
+                section(3, NODE, 4, 2),
+                section(4, NODE)));
+
+        assertThat(result.errors()).containsExactly(
+                "Book has no ending section",
+                "Section 4 is not an ending but has no options");
+    }
+
+    @Test
     void reportsEveryProblemAtOnce() {
         ValidationResult result = validator.validate(book(
                 section(1, NODE, 42),
