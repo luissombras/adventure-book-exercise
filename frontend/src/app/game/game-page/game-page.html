@@ -25,7 +25,7 @@
         <h2 class="ending__title">The End</h2>
         <p>You reached an ending of {{ game.bookTitle }}.</p>
         <div class="ending__actions">
-          <button type="button" class="quest-button" [disabled]="busy()" (click)="start()">Play again</button>
+          <button type="button" class="quest-button" [disabled]="busy()" (click)="restart()">Play again</button>
           <a class="ending__link" routerLink="/">Back to Library</a>
         </div>
       </section>

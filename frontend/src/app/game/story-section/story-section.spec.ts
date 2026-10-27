@@ -26,6 +26,17 @@ describe('StorySection', () => {
     expect(chosen).toEqual([1]);
   });
 
+  it('moves focus to the heading whenever the section changes', async () => {
+    const fixture = render({ id: 1, text: 'A dark cell.', options: ['Open the door'] });
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLButtonElement>('.choice')!.focus();
+
+    fixture.componentRef.setInput('section', { id: 500, text: 'The door is locked.', options: ['Think'] });
+    await fixture.whenStable();
+
+    expect(document.activeElement).toBe(element.querySelector('.story__title'));
+  });
+
   it('has no question when the section has no options', () => {
     const element = render({ id: 1000, text: 'You are free.', options: [] }).nativeElement as HTMLElement;
 

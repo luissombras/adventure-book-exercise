@@ -1,6 +1,6 @@
 @let s = section();
 <article class="story">
-  <h2 class="story__title">Section {{ s.id }}</h2>
+  <h2 #heading class="story__title" tabindex="-1">Section {{ s.id }}</h2>
   <p class="story__text">{{ s.text }}</p>
 
   @if (s.options.length) {

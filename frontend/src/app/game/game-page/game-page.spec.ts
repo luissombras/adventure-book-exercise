@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { Title } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { Game } from '../game.model';
 import { GamePage } from './game-page';
@@ -46,6 +47,27 @@ describe('GamePage', () => {
     expect(element.querySelector('.game-header__title')?.textContent).toContain('The Prisoner');
     expect(element.querySelector('.story__text')?.textContent).toContain('You wake up in a dark prison cell.');
     expect(element.querySelectorAll('.choice').length).toBe(2);
+  });
+
+  it('names the tab after the book', async () => {
+    await startWith(game());
+
+    expect(TestBed.inject(Title).getTitle()).toBe('The Prisoner – Adventure Book');
+  });
+
+  it('starts a new game when the route switches to another book', async () => {
+    const { fixture, element } = await startWith(game());
+
+    fixture.componentRef.setInput('bookId', 'another-book');
+    fixture.detectChanges();
+    const request = httpMock.expectOne({ method: 'POST', url: '/api/games' });
+    expect(request.request.body).toEqual({ bookId: 'another-book' });
+    expect(element.querySelector('app-story-section')).toBeNull();
+
+    request.flush(game({ id: 'game-2', bookId: 'another-book', bookTitle: 'Another Book' }));
+    await fixture.whenStable();
+
+    expect(element.querySelector('.game-header__title')?.textContent).toContain('Another Book');
   });
 
   it('sends the chosen option and shows the next section', async () => {
