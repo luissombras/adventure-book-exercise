@@ -2,6 +2,7 @@ package com.adventurebook.service;
 
 import com.adventurebook.dto.GameView;
 import com.adventurebook.model.GameStatus;
+import com.adventurebook.model.InvalidChoiceException;
 import com.adventurebook.repository.BookLoader;
 import com.adventurebook.repository.BookRepository;
 import com.adventurebook.repository.GameRepository;

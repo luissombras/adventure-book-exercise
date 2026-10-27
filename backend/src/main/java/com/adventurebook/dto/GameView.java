@@ -13,7 +13,8 @@ public record GameView(String id, String bookId, String bookTitle, GameStatus st
     public record SectionView(int id, String text, List<String> options) {
     }
 
-    public static GameView of(Game game, Book book, Section section) {
+    public static GameView of(Game game, Book book) {
+        Section section = game.currentSection(book);
         GameStatus status = section.isEnding() ? GameStatus.FINISHED : GameStatus.IN_PROGRESS;
         List<String> options = section.options().stream().map(Option::description).toList();
         return new GameView(game.id(), book.id(), book.title(), status,

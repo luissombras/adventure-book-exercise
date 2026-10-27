@@ -1,4 +1,4 @@
-package com.adventurebook.service;
+package com.adventurebook.model;
 
 public class InvalidChoiceException extends RuntimeException {
 
