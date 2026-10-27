@@ -105,8 +105,6 @@ class BookValidatorTest {
         Map<String, List<String>> errorsByBook = books.stream()
                 .collect(Collectors.toMap(Book::id, book -> validator.validate(book).errors()));
 
-        // Section 666 claims to be unreachable, but crystal-caverns (from 900) and pirates-jade-sea (from 1)
-        // both lead to it, only the-prisoner really leaves it unreachable.
         assertThat(errorsByBook).containsOnly(
                 entry("crystal-caverns", List.of("Section 666 is not an ending but has no options")),
                 entry("pirates-jade-sea", List.of(

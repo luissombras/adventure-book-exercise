@@ -17,9 +17,6 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    /**
-     * Lists the library, e.g. {@code /api/books?search=pirate&difficulty=EASY&difficulty=MEDIUM}.
-     */
     @GetMapping
     public List<BookSummary> list(@RequestParam(required = false) String search,
                                   @RequestParam(name = "difficulty", required = false) List<Difficulty> difficulties,

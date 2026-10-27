@@ -2,9 +2,6 @@ package com.adventurebook.book;
 
 import java.util.List;
 
-/**
- * What the library page needs to show a book card, including why a book can't be played.
- */
 public record BookSummary(
         String id,
         String title,

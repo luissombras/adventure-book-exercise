@@ -12,17 +12,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Checks the rules a book must follow to be playable:
- * <ul>
- *     <li>exactly one beginning section</li>
- *     <li>at least one ending section</li>
- *     <li>every option leads to an existing section</li>
- *     <li>every non-ending section the player can reach has at least one option</li>
- * </ul>
- * The last rule only looks at reachable sections: a dead section nobody can get to
- * (like section 666 in the provided books) can't block a game, so it isn't an error.
- */
 @Component
 public class BookValidator {
 

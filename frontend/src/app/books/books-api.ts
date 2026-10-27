@@ -7,7 +7,6 @@ export function hasActiveFilters(filters: BookFilters): boolean {
   return filters.search.trim() !== '' || filters.difficulties.length > 0 || filters.categories.length > 0;
 }
 
-/** Builds the GET /api/books request, leaving out the filters that aren't set. */
 export function booksRequest(filters: BookFilters): HttpResourceRequest {
   const params: Record<string, string | string[]> = {};
   const search = filters.search.trim();

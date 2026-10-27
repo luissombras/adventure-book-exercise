@@ -41,16 +41,13 @@ export class LibraryPage {
 
   protected readonly filtering = computed(() => hasActiveFilters(this.filters()));
 
-  /** The whole library, used for the counter and to know which categories exist. */
   private readonly catalog = httpResource<BookSummary[]>(() => BOOKS_URL, { defaultValue: [] });
 
-  /** Only requested when a filter is set, otherwise the catalog is shown as is. */
   private readonly filtered = httpResource<BookSummary[]>(
     () => (this.filtering() ? booksRequest(this.filters()) : undefined),
     { defaultValue: [] },
   );
 
-  // value() throws while a resource is in error, so fall back to an empty list and let failed() drive the UI.
   private readonly allBooks = computed(() => (this.catalog.hasValue() ? this.catalog.value() : []));
   private readonly filteredBooks = computed(() => (this.filtered.hasValue() ? this.filtered.value() : []));
 

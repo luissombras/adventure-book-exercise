@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Keeps the books in memory, filled with the bundled books on startup.
- */
 @Repository
 public class BookRepository {
 

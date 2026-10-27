@@ -19,11 +19,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Reads the book JSON files bundled with the application.
- * A file that can't be parsed (empty, malformed...) is skipped with a warning
- * instead of preventing the application from starting.
- */
 @Component
 public class BookLoader {
 

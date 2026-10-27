@@ -3,11 +3,6 @@ package com.adventurebook.book;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Library filters. Values inside a filter are OR-ed (EASY or HARD),
- * different filters are AND-ed (EASY and matching the search text).
- * An empty filter matches everything.
- */
 public record BookSearch(String text, List<Difficulty> difficulties, List<String> categories) {
 
     public BookSearch {

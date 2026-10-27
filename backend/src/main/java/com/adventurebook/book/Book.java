@@ -6,10 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * A book as described by the JSON files. The {@code id} is not part of the file,
- * it is assigned when the book is loaded (from the file name).
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record Book(
         String id,
