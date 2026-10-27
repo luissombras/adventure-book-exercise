@@ -1,6 +1,6 @@
 package com.adventurebook.model;
 
-public record Game(String id, String bookId, int sectionId, int health, GameStatus status, Consequence lastConsequence) {
+public record Game(String id, String bookId, int sectionId, int health, GameStatus status, Outcome lastOutcome) {
 
     public static final int MAX_HEALTH = 10;
 
@@ -24,14 +24,16 @@ public record Game(String id, String bookId, int sectionId, int health, GameStat
 
         Option option = current.options().get(optionIndex);
         Consequence consequence = option.consequence();
-        int healthChange = consequence == null ? 0 : consequence.healthChange();
-        int newHealth = Math.clamp((long) health + healthChange, 0, MAX_HEALTH);
+        int newHealth = consequence == null
+                ? health
+                : Math.clamp((long) health + consequence.healthChange(), 0, MAX_HEALTH);
+        Outcome outcome = consequence == null ? null : new Outcome(consequence.text(), newHealth - health);
         if (newHealth == 0) {
-            return new Game(id, bookId, sectionId, 0, GameStatus.DEAD, consequence);
+            return new Game(id, bookId, sectionId, 0, GameStatus.DEAD, outcome);
         }
 
         Section next = book.findSection(option.gotoId()).orElseThrow();
         GameStatus nextStatus = next.isEnding() ? GameStatus.FINISHED : GameStatus.IN_PROGRESS;
-        return new Game(id, bookId, next.id(), newHealth, nextStatus, consequence);
+        return new Game(id, bookId, next.id(), newHealth, nextStatus, outcome);
     }
 }

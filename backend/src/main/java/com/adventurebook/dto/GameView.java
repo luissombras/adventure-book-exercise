@@ -1,10 +1,10 @@
 package com.adventurebook.dto;
 
 import com.adventurebook.model.Book;
-import com.adventurebook.model.Consequence;
 import com.adventurebook.model.Game;
 import com.adventurebook.model.GameStatus;
 import com.adventurebook.model.Option;
+import com.adventurebook.model.Outcome;
 import com.adventurebook.model.Section;
 
 import java.util.List;
@@ -37,11 +37,11 @@ public record GameView(
                 game.status(),
                 game.health(),
                 Game.MAX_HEALTH,
-                consequenceView(game.lastConsequence()),
+                consequenceView(game.lastOutcome()),
                 new SectionView(section.id(), section.text(), options));
     }
 
-    private static ConsequenceView consequenceView(Consequence consequence) {
-        return consequence == null ? null : new ConsequenceView(consequence.text(), consequence.healthChange());
+    private static ConsequenceView consequenceView(Outcome outcome) {
+        return outcome == null ? null : new ConsequenceView(outcome.text(), outcome.healthChange());
     }
 }

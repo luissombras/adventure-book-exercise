@@ -35,7 +35,7 @@ class GameTest {
         assertThat(game.sectionId()).isEqualTo(1);
         assertThat(game.health()).isEqualTo(Game.MAX_HEALTH);
         assertThat(game.status()).isEqualTo(GameStatus.IN_PROGRESS);
-        assertThat(game.lastConsequence()).isNull();
+        assertThat(game.lastOutcome()).isNull();
     }
 
     @Test
@@ -44,7 +44,7 @@ class GameTest {
 
         assertThat(game.sectionId()).isEqualTo(2);
         assertThat(game.health()).isEqualTo(10);
-        assertThat(game.lastConsequence()).isNull();
+        assertThat(game.lastOutcome()).isNull();
     }
 
     @Test
@@ -52,14 +52,23 @@ class GameTest {
         Game game = Game.start("g1", book).choose(book, 1);
 
         assertThat(game.health()).isEqualTo(7);
-        assertThat(game.lastConsequence()).isEqualTo(SCRATCH);
+        assertThat(game.lastOutcome()).isEqualTo(new Outcome("A scratch.", -3));
     }
 
     @Test
-    void healthNeverGoesAboveTheMaximum() {
+    void healthNeverGoesAboveTheMaximumAndOnlyTheAppliedGainIsReported() {
         Game game = Game.start("g1", book).choose(book, 1).choose(book, 0).choose(book, 2);
 
         assertThat(game.health()).isEqualTo(Game.MAX_HEALTH);
+        assertThat(game.lastOutcome()).isEqualTo(new Outcome("A potion.", 3));
+    }
+
+    @Test
+    void gainingHealthAtFullHealthChangesNothing() {
+        Game game = Game.start("g1", book).choose(book, 2);
+
+        assertThat(game.health()).isEqualTo(Game.MAX_HEALTH);
+        assertThat(game.lastOutcome()).isEqualTo(new Outcome("A potion.", 0));
     }
 
     @Test
@@ -69,7 +78,7 @@ class GameTest {
         assertThat(game.status()).isEqualTo(GameStatus.DEAD);
         assertThat(game.health()).isZero();
         assertThat(game.sectionId()).isEqualTo(1);
-        assertThat(game.lastConsequence()).isEqualTo(FALL);
+        assertThat(game.lastOutcome()).isEqualTo(new Outcome("A long fall.", -10));
     }
 
     @Test
