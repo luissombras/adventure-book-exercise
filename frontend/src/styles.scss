@@ -1,1 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-bg: #f8f5f1;
+  --color-surface: #fdfbf8;
+  --color-text: #3d2b1f;
+  --color-muted: #7d6a5b;
+  --color-border: #f1e6d8;
+  --color-border-strong: #ead9c4;
+  --color-chip: #f3e8da;
+  --color-chip-hover: #ecdcc8;
+  --color-input: #f5ebdf;
+  --color-hero: #6b5547;
+  --color-gold: #ecb94f;
+  --gradient-gold: linear-gradient(90deg, #c4882a, #ebc044);
+
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 3px rgb(61 43 31 / 6%);
+  --shadow-md: 0 10px 24px rgb(61 43 31 / 10%);
+
+  --font-serif: Georgia, 'Times New Roman', serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 700;
+}
