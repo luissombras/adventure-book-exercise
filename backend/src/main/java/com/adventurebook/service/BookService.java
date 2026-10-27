@@ -29,6 +29,16 @@ public class BookService {
                 .toList();
     }
 
+    public Book playableBook(String bookId) {
+        Book book = repository.findById(bookId)
+                .orElseThrow(() -> new NotFoundException("Book " + bookId + " not found"));
+        ValidationResult validation = validationOf(book);
+        if (!validation.isValid()) {
+            throw new UnplayableBookException(book.title(), validation.errors());
+        }
+        return book;
+    }
+
     private ValidationResult validationOf(Book book) {
         return validations.computeIfAbsent(book.id(), id -> validator.validate(book));
     }
