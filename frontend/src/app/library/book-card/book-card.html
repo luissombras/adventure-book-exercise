@@ -1,0 +1,43 @@
+@let b = book();
+<article class="card" [class.card--invalid]="!b.valid">
+  <header>
+    <h3 class="card__title">{{ b.title }}</h3>
+    <p class="card__author">by {{ b.author }}</p>
+  </header>
+
+  @if (b.description) {
+    <p class="card__description">{{ b.description }}</p>
+  }
+
+  <div class="card__badges">
+    @if (b.difficulty) {
+      <span class="badge" [class]="'badge--' + b.difficulty.toLowerCase()">{{ b.difficulty | titlecase }}</span>
+    }
+    @if (!b.valid) {
+      <span class="badge badge--invalid"><app-icon name="alert" /> Unplayable</span>
+    }
+  </div>
+
+  <p class="card__meta">
+    <app-icon name="book-open" /> {{ b.sectionCount }} {{ b.sectionCount === 1 ? 'section' : 'sections' }}
+  </p>
+
+  @if (!b.valid) {
+    <details class="card__errors">
+      <summary>Why can't I play this book?</summary>
+      <ul>
+        @for (error of b.errors; track error) {
+          <li>{{ error }}</li>
+        }
+      </ul>
+    </details>
+  }
+
+  <footer class="card__footer">
+    @if (b.valid) {
+      <a class="quest-button" [routerLink]="['/play', b.id]"><app-icon name="star" /> Begin Quest</a>
+    } @else {
+      <button class="quest-button" type="button" disabled><app-icon name="star" /> Begin Quest</button>
+    }
+  </footer>
+</article>

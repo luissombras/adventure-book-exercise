@@ -1,0 +1,67 @@
+package com.adventurebook.repository;
+
+import com.adventurebook.model.Book;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Component
+public class BookLoader {
+
+    private static final Logger log = LoggerFactory.getLogger(BookLoader.class);
+
+    private final JsonMapper jsonMapper;
+    private final String location;
+    private final ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+
+    public BookLoader(JsonMapper jsonMapper,
+                      @Value("${adventure-book.books-location:classpath:books/*.json}") String location) {
+        this.jsonMapper = jsonMapper;
+        this.location = location;
+    }
+
+    public List<Book> loadAll() {
+        List<Book> books = new ArrayList<>();
+        for (Resource resource : findResources()) {
+            load(resource).ifPresent(books::add);
+        }
+        log.info("Loaded {} book(s) from {}", books.size(), location);
+        return books;
+    }
+
+    private Resource[] findResources() {
+        try {
+            return resolver.getResources(location);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Could not list book files at " + location, e);
+        }
+    }
+
+    private Optional<Book> load(Resource resource) {
+        String fileName = resource.getFilename();
+        try (InputStream in = resource.getInputStream()) {
+            Book book = jsonMapper.readValue(in, Book.class);
+            return Optional.of(book.withId(idFromFileName(fileName)));
+        } catch (IOException | JacksonException e) {
+            log.warn("Skipping book file {}: {}", fileName, e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    private static String idFromFileName(String fileName) {
+        return fileName.replaceFirst("\\.json$", "");
+    }
+}

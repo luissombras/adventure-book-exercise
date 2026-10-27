@@ -1,0 +1,9 @@
+{
+  "title": "Tiny",
+  "author": "Test",
+  "difficulty": "EASY",
+  "sections": [
+    { "id": 1, "text": "Start", "type": "BEGIN", "options": [{ "description": "Go", "gotoId": 2 }] },
+    { "id": 2, "text": "End", "type": "END" }
+  ]
+}

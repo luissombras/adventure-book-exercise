@@ -1,0 +1,76 @@
+<section class="hero">
+  <div class="hero__content">
+    <h1 class="hero__title">✨ Adventure Awaits ✨</h1>
+    <p class="hero__subtitle">
+      Embark on epic quests where every choice shapes your destiny. Explore mystical realms, solve ancient
+      mysteries, and become the hero of your own story.
+    </p>
+    <p class="hero__count">
+      <app-icon name="book-open" class="hero__icon" />
+      {{ allBooks().length }} Epic {{ allBooks().length === 1 ? 'Adventure' : 'Adventures' }} Available
+      <app-icon name="sparkles" class="hero__icon" />
+    </p>
+  </div>
+</section>
+
+<main class="library">
+  <header class="library__header">
+    <h2 class="library__title">📚 The Adventure Library</h2>
+    <p class="library__intro">
+      Choose your next adventure from our collection of interactive tales. Each book offers unique paths and
+      multiple endings based on your choices.
+    </p>
+  </header>
+
+  <div class="search">
+    <app-icon name="search" class="search__icon" />
+    <input
+      class="search__input"
+      type="search"
+      placeholder="Search adventures..."
+      aria-label="Search adventures by title or author"
+      [value]="search()"
+      (input)="onSearch($event)"
+    />
+  </div>
+
+  <div class="filters" role="group" aria-label="Filters">
+    <span class="filters__label"><app-icon name="filter" /> Filters:</span>
+    @for (difficulty of difficulties; track difficulty) {
+      <button
+        type="button"
+        class="chip"
+        [class.chip--active]="selectedDifficulties().includes(difficulty)"
+        [attr.aria-pressed]="selectedDifficulties().includes(difficulty)"
+        (click)="toggleDifficulty(difficulty)"
+      >
+        {{ difficulty | titlecase }}
+      </button>
+    }
+    @if (filtering()) {
+      <button type="button" class="chip chip--clear" (click)="clearFilters()">Clear</button>
+    }
+  </div>
+
+  @if (failed()) {
+    <div class="state state--error">
+      <p>We couldn't reach the library. Is the backend running?</p>
+      <button type="button" class="chip" (click)="reload()">Try again</button>
+    </div>
+  } @else if (loading()) {
+    <p class="state">Dusting off the shelves...</p>
+  } @else if (books().length === 0) {
+    <div class="state">
+      <p>No adventures match your search.</p>
+      @if (filtering()) {
+        <button type="button" class="chip" (click)="clearFilters()">Clear filters</button>
+      }
+    </div>
+  } @else {
+    <div class="grid">
+      @for (book of books(); track book.id) {
+        <app-book-card [book]="book" />
+      }
+    </div>
+  }
+</main>
