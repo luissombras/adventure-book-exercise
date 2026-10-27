@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { Icon } from '../../shared/icon/icon';
 
-const LOW_HEALTH = 3;
+const LOW_HEALTH_PERCENT = 30;
 
 @Component({
   selector: 'app-health-meter',
@@ -15,5 +15,5 @@ export class HealthMeter {
   readonly max = input.required<number>();
 
   protected readonly percent = computed(() => (this.max() > 0 ? (this.health() / this.max()) * 100 : 0));
-  protected readonly low = computed(() => this.health() <= LOW_HEALTH);
+  protected readonly low = computed(() => this.percent() <= LOW_HEALTH_PERCENT);
 }

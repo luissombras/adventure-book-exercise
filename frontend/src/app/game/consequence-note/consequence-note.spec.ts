@@ -11,10 +11,10 @@ describe('ConsequenceNote', () => {
     return fixture.nativeElement as HTMLElement;
   }
 
-  it('announces a loss of health', () => {
+  it('shows a loss of health', () => {
     const element = render({ text: 'You cut yourself on a rusty nail.', healthChange: -6 });
 
-    expect(element.querySelector('[role="status"]')?.textContent).toContain('You cut yourself on a rusty nail.');
+    expect(element.querySelector('.note__text')?.textContent).toContain('You cut yourself on a rusty nail.');
     expect(element.querySelector('.note__change')?.textContent).toContain('−6 health');
     expect(element.querySelector('.note')?.classList).not.toContain('note--gain');
   });

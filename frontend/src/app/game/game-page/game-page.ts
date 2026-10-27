@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Observable, Subscription, finalize } from 'rxjs';
-import { ConsequenceNote } from '../consequence-note/consequence-note';
+import { ConsequenceNote, healthChangeLabel } from '../consequence-note/consequence-note';
 import { GameApi } from '../game-api';
 import { Game, Problem } from '../game.model';
 import { GameHeader } from '../game-header/game-header';
@@ -28,6 +28,26 @@ export class GamePage {
   protected readonly game = signal<Game | null>(null);
   protected readonly problem = signal<Problem | null>(null);
   protected readonly busy = signal(false);
+
+  protected readonly announcement = computed(() => {
+    const game = this.game();
+    if (!game) {
+      return '';
+    }
+    const parts: string[] = [];
+    if (game.consequence) {
+      parts.push(game.consequence.text);
+      if (game.consequence.healthChange) {
+        parts.push(`${healthChangeLabel(game.consequence.healthChange)}.`);
+      }
+    }
+    if (game.status === 'DEAD') {
+      parts.push('You died.');
+    } else if (game.status === 'FINISHED') {
+      parts.push('The End.');
+    }
+    return parts.join(' ');
+  });
 
   constructor() {
     effect(() => {

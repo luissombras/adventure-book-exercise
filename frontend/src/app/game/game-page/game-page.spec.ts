@@ -69,6 +69,9 @@ describe('GamePage', () => {
 
     expect(element.querySelector('app-consequence-note')?.textContent).toContain('rusty nail');
     expect(element.querySelector('.health__value')?.textContent).toContain('4 / 10');
+    expect(element.querySelector('[role="status"]')?.textContent?.trim()).toBe(
+      'You cut yourself on a rusty nail. −6 health.',
+    );
   });
 
   it('tells the player they died and offers to try again', async () => {
@@ -83,6 +86,9 @@ describe('GamePage', () => {
 
     expect(element.querySelector('.ending--dead .ending__title')?.textContent).toContain('You died');
     expect(element.querySelectorAll('.choice').length).toBe(0);
+    expect(element.querySelector('[role="status"]')?.textContent).toContain('You died.');
+    const order = [...element.querySelectorAll('app-story-section, app-consequence-note, .ending')].map((e) => e.tagName.toLowerCase());
+    expect(order).toEqual(['app-story-section', 'app-consequence-note', 'section']);
 
     const tryAgain = element.querySelector<HTMLButtonElement>('.ending .quest-button')!;
     expect(tryAgain.textContent).toContain('Try again');
