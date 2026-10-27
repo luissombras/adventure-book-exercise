@@ -117,6 +117,89 @@ class BookValidatorTest {
     }
 
     @Test
+    void emptyBookHasNeitherBeginningNorEnding() {
+        assertThat(validator.validate(book()).errors()).containsExactly(
+                "Book has no beginning section",
+                "Book has no ending section");
+    }
+
+    @Test
+    void beginningWithoutOptionsIsADeadEnd() {
+        ValidationResult result = validator.validate(book(
+                section(1, BEGIN),
+                section(2, END)));
+
+        assertThat(result.errors()).containsExactly("Section 1 is not an ending but has no options");
+    }
+
+    @Test
+    void sectionThatOnlyLeadsToItselfIsAllowed() {
+        ValidationResult result = validator.validate(book(
+                section(1, BEGIN, 1, 2),
+                section(2, END)));
+
+        assertThat(result.isValid()).isTrue();
+    }
+
+    @Test
+    void unknownTargetsAreReportedEvenInUnreachableSections() {
+        ValidationResult result = validator.validate(book(
+                section(1, BEGIN, 2),
+                section(2, END),
+                section(50, NODE, 404)));
+
+        assertThat(result.errors()).containsExactly("Section 50 has an option leading to unknown section 404");
+    }
+
+    @Test
+    void everyUnknownTargetIsReportedSeparately() {
+        ValidationResult result = validator.validate(book(
+                section(1, BEGIN, 7, 8, 2),
+                section(2, END)));
+
+        assertThat(result.errors()).containsExactly(
+                "Section 1 has an option leading to unknown section 7",
+                "Section 1 has an option leading to unknown section 8");
+    }
+
+    @Test
+    void deadEndsReachableFromAnyBeginningAreReported() {
+        ValidationResult result = validator.validate(book(
+                section(1, BEGIN, 3),
+                section(2, BEGIN, 4),
+                section(3, END),
+                section(4, NODE)));
+
+        assertThat(result.errors()).containsExactly(
+                "Book has more than one beginning section (sections 1, 2)",
+                "Section 4 is not an ending but has no options");
+    }
+
+    @Test
+    void endingsMayHaveOptions() {
+        ValidationResult result = validator.validate(book(
+                section(1, BEGIN, 2),
+                section(2, END, 1)));
+
+        assertThat(result.isValid()).isTrue();
+    }
+
+    @Test
+    void duplicatesAreReportedFirstAndOncePerId() {
+        ValidationResult result = validator.validate(book(
+                section(3, BEGIN, 4),
+                section(3, NODE, 4),
+                section(3, NODE, 4),
+                section(9, NODE),
+                section(9, NODE),
+                section(4, END)));
+
+        assertThat(result.errors()).containsExactly(
+                "Section 3 is defined more than once",
+                "Section 9 is defined more than once");
+    }
+
+    @Test
     void reportsEveryProblemAtOnce() {
         ValidationResult result = validator.validate(book(
                 section(1, NODE, 42),
