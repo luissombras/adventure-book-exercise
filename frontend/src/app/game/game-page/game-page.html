@@ -1,4 +1,5 @@
-<app-game-header [bookTitle]="game()?.bookTitle" />
+@let current = game();
+<app-game-header [bookTitle]="current?.bookTitle" [health]="current?.health" [maxHealth]="current?.maxHealth" />
 
 <main class="game">
   @if (problem(); as problem) {
@@ -11,21 +12,32 @@
           }
         </ul>
       }
-      @if (!game()) {
+      @if (!current) {
         <a class="notice__link" routerLink="/">Pick another adventure</a>
       }
     </div>
   }
 
-  @if (game(); as game) {
-    <app-story-section [section]="game.section" [disabled]="busy()" (choose)="choose($event)" />
+  @if (current) {
+    @if (current.consequence; as consequence) {
+      <app-consequence-note [consequence]="consequence" />
+    }
 
-    @if (game.status === 'FINISHED') {
-      <section class="ending">
-        <h2 class="ending__title">The End</h2>
-        <p>You reached an ending of {{ game.bookTitle }}.</p>
+    <app-story-section [section]="current.section" [disabled]="busy()" (choose)="choose($event)" />
+
+    @if (current.status !== 'IN_PROGRESS') {
+      <section class="ending" [class.ending--dead]="current.status === 'DEAD'">
+        @if (current.status === 'DEAD') {
+          <h2 class="ending__title">You died</h2>
+          <p>Your health ran out. This adventure is over.</p>
+        } @else {
+          <h2 class="ending__title">The End</h2>
+          <p>You reached an ending of {{ current.bookTitle }} with {{ current.health }} health left.</p>
+        }
         <div class="ending__actions">
-          <button type="button" class="quest-button" [disabled]="busy()" (click)="restart()">Play again</button>
+          <button type="button" class="quest-button" [disabled]="busy()" (click)="restart()">
+            {{ current.status === 'DEAD' ? 'Try again' : 'Play again' }}
+          </button>
           <a class="ending__link" routerLink="/">Back to Library</a>
         </div>
       </section>

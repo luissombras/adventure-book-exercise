@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Observable, Subscription, finalize } from 'rxjs';
+import { ConsequenceNote } from '../consequence-note/consequence-note';
 import { GameApi } from '../game-api';
 import { Game, Problem } from '../game.model';
 import { GameHeader } from '../game-header/game-header';
@@ -11,7 +12,7 @@ import { StorySection } from '../story-section/story-section';
 
 @Component({
   selector: 'app-game-page',
-  imports: [GameHeader, RouterLink, StorySection],
+  imports: [ConsequenceNote, GameHeader, RouterLink, StorySection],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './game-page.html',
   styleUrl: './game-page.scss',

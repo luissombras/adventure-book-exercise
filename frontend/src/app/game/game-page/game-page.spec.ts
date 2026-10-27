@@ -12,6 +12,9 @@ function game(overrides: Partial<Game> = {}): Game {
     bookId: 'the-prisoner',
     bookTitle: 'The Prisoner',
     status: 'IN_PROGRESS',
+    health: 10,
+    maxHealth: 10,
+    consequence: null,
     section: { id: 1, text: 'You wake up in a dark prison cell.', options: ['Open the door', 'Look under the bed'] },
     ...overrides,
   };
@@ -47,6 +50,48 @@ describe('GamePage', () => {
     expect(element.querySelector('.game-header__title')?.textContent).toContain('The Prisoner');
     expect(element.querySelector('.story__text')?.textContent).toContain('You wake up in a dark prison cell.');
     expect(element.querySelectorAll('.choice').length).toBe(2);
+    expect(element.querySelector('.health__value')?.textContent).toContain('10 / 10');
+    expect(element.querySelector('app-consequence-note')).toBeNull();
+  });
+
+  it('shows the consequence of a choice and the new health', async () => {
+    const { fixture, element } = await startWith(game());
+
+    element.querySelectorAll<HTMLButtonElement>('.choice')[1].click();
+    httpMock.expectOne('/api/games/game-1/choices').flush(
+      game({
+        health: 4,
+        consequence: { text: 'You cut yourself on a rusty nail.', healthChange: -6 },
+        section: { id: 30, text: 'You found a key.', options: ['Open the door'] },
+      }),
+    );
+    await fixture.whenStable();
+
+    expect(element.querySelector('app-consequence-note')?.textContent).toContain('rusty nail');
+    expect(element.querySelector('.health__value')?.textContent).toContain('4 / 10');
+  });
+
+  it('tells the player they died and offers to try again', async () => {
+    const { fixture, element } = await startWith(
+      game({
+        status: 'DEAD',
+        health: 0,
+        consequence: { text: "You're getting a little more crazier...", healthChange: -3 },
+        section: { id: 500, text: 'The door is locked.', options: [] },
+      }),
+    );
+
+    expect(element.querySelector('.ending--dead .ending__title')?.textContent).toContain('You died');
+    expect(element.querySelectorAll('.choice').length).toBe(0);
+
+    const tryAgain = element.querySelector<HTMLButtonElement>('.ending .quest-button')!;
+    expect(tryAgain.textContent).toContain('Try again');
+    tryAgain.click();
+    httpMock.expectOne({ method: 'POST', url: '/api/games' }).flush(game());
+    await fixture.whenStable();
+
+    expect(element.querySelector('.ending')).toBeNull();
+    expect(element.querySelector('.health__value')?.textContent).toContain('10 / 10');
   });
 
   it('names the tab after the book', async () => {

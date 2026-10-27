@@ -3,4 +3,7 @@
   @if (bookTitle()) {
     <span class="game-header__title"><app-icon name="book-open" /> {{ bookTitle() }}</span>
   }
+  @if (health() !== undefined && maxHealth() !== undefined) {
+    <app-health-meter class="game-header__health" [health]="health()!" [max]="maxHealth()!" />
+  }
 </header>
