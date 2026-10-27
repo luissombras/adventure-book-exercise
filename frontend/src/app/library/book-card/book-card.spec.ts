@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { BookSummary } from '../books/book.model';
+import { BookSummary } from '../../books/book.model';
 import { BookCard } from './book-card';
 
 const prisoner: BookSummary = {

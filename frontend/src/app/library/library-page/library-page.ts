@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
-import { BookSummary, DIFFICULTIES, Difficulty } from '../books/book.model';
-import { Icon } from '../shared/icon';
-import { BookCard } from './book-card';
+import { BookSummary, DIFFICULTIES, Difficulty } from '../../books/book.model';
+import { Icon } from '../../shared/icon/icon';
+import { BookCard } from '../book-card/book-card';
 
 @Component({
   selector: 'app-library-page',

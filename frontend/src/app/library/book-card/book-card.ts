@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { BookSummary } from '../books/book.model';
-import { Icon } from '../shared/icon';
+import { BookSummary } from '../../books/book.model';
+import { Icon } from '../../shared/icon/icon';
 
 @Component({
   selector: 'app-book-card',
