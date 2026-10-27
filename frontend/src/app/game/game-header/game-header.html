@@ -1,6 +1,7 @@
 <header class="game-header">
   <a class="game-header__back" routerLink="/"><app-icon name="arrow-left" /> Back to Library</a>
-  @if (bookTitle()) {
-    <span class="game-header__title"><app-icon name="book-open" /> {{ bookTitle() }}</span>
+  @if (game(); as game) {
+    <span class="game-header__title"><app-icon name="book-open" /> {{ game.bookTitle }}</span>
+    <app-health-meter class="game-header__health" [health]="game.health" [max]="game.maxHealth" />
   }
 </header>

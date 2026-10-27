@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.UnaryOperator;
 
 @Repository
 public class GameRepository {
@@ -19,5 +20,9 @@ public class GameRepository {
     public Game save(Game game) {
         games.put(game.id(), game);
         return game;
+    }
+
+    public Optional<Game> update(String id, UnaryOperator<Game> change) {
+        return Optional.ofNullable(games.computeIfPresent(id, (key, game) -> change.apply(game)));
     }
 }

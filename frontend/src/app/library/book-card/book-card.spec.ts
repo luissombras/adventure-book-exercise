@@ -41,4 +41,22 @@ describe('BookCard', () => {
     expect(element.querySelector('a.quest-button')).toBeNull();
     expect(element.querySelector<HTMLButtonElement>('button.quest-button')?.disabled).toBe(true);
   });
+
+  it('uses the singular for one section and leaves out what the book does not have', () => {
+    const element = render({ ...prisoner, description: null, difficulty: null, sectionCount: 1 });
+
+    expect(element.textContent).toContain('1 section');
+    expect(element.textContent).not.toContain('1 sections');
+    expect(element.querySelector('.card__description')).toBeNull();
+    expect(element.querySelector('.badge--easy, .badge--medium, .badge--hard')).toBeNull();
+  });
+
+  it('lists every reason a book cannot be played', () => {
+    const element = render({ ...prisoner, valid: false, errors: ['First problem', 'Second problem'] });
+
+    expect([...element.querySelectorAll('.card__errors li')].map((li) => li.textContent?.trim())).toEqual([
+      'First problem',
+      'Second problem',
+    ]);
+  });
 });

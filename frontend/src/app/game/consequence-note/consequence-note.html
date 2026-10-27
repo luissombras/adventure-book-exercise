@@ -1,0 +1,6 @@
+<p class="note" [class.note--gain]="gain()">
+  <span class="note__text">{{ consequence().text }}</span>
+  @if (consequence().healthChange !== 0) {
+    <span class="note__change">{{ change() }}</span>
+  }
+</p>

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +36,27 @@ class BookControllerTest {
         prisoner.extractingPath("$[2].errors").asArray().isEmpty();
         prisoner.extractingPath("$[2].sectionCount").isEqualTo(6);
         prisoner.extractingPath("$[2].description").asString().startsWith("You wake up in what seems to be a dark prison cell");
+    }
+
+    @Test
+    void everyBookExposesTheFieldsTheCardNeeds() {
+        assertThat(mvc.get().uri("/api/books"))
+                .hasContentType(MediaType.APPLICATION_JSON)
+                .bodyJson()
+                .extractingPath("$[0]")
+                .asMap()
+                .containsOnlyKeys("id", "title", "author", "description", "difficulty", "sectionCount", "valid", "errors");
+    }
+
+    @Test
+    void piratesListsBothOfItsProblems() {
+        assertThat(mvc.get().uri("/api/books"))
+                .bodyJson()
+                .extractingPath("$[0].errors")
+                .asArray()
+                .containsExactly(
+                        "Section 1 has an option leading to unknown section 999",
+                        "Section 666 is not an ending but has no options");
     }
 
     @Test

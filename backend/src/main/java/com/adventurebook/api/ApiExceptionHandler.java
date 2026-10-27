@@ -1,6 +1,6 @@
 package com.adventurebook.api;
 
-import com.adventurebook.service.InvalidChoiceException;
+import com.adventurebook.model.InvalidChoiceException;
 import com.adventurebook.service.NotFoundException;
 import com.adventurebook.service.UnplayableBookException;
 import org.springframework.http.HttpStatus;

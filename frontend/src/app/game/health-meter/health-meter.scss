@@ -1,0 +1,37 @@
+:host {
+  display: block;
+}
+
+.health {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #b91c1c;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.health__bar {
+  width: 6rem;
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-border-strong);
+}
+
+.health__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #16a34a;
+  transition: width 0.3s;
+}
+
+.health__value {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.health--low .health__fill {
+  background: #dc2626;
+}

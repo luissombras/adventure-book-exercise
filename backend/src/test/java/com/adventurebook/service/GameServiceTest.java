@@ -2,6 +2,7 @@ package com.adventurebook.service;
 
 import com.adventurebook.dto.GameView;
 import com.adventurebook.model.GameStatus;
+import com.adventurebook.model.InvalidChoiceException;
 import com.adventurebook.repository.BookLoader;
 import com.adventurebook.repository.BookRepository;
 import com.adventurebook.repository.GameRepository;
@@ -27,6 +28,9 @@ class GameServiceTest {
         assertThat(game.status()).isEqualTo(GameStatus.IN_PROGRESS);
         assertThat(game.section().id()).isEqualTo(1);
         assertThat(game.section().options()).containsExactly("You try to open the door", "You look under the bed");
+        assertThat(game.health()).isEqualTo(10);
+        assertThat(game.maxHealth()).isEqualTo(10);
+        assertThat(game.consequence()).isNull();
     }
 
     @Test
@@ -50,6 +54,36 @@ class GameServiceTest {
         assertThat(game.section().id()).isEqualTo(1000);
         assertThat(game.status()).isEqualTo(GameStatus.FINISHED);
         assertThat(game.section().options()).isEmpty();
+        assertThat(game.health()).isEqualTo(4);
+    }
+
+    @Test
+    void consequencesChangeHealthAndAreReported() {
+        String gameId = gameService.start("the-prisoner").id();
+        gameService.choose(gameId, 1);
+
+        GameView game = gameService.choose(gameId, 0);
+
+        assertThat(game.health()).isEqualTo(4);
+        assertThat(game.consequence().healthChange()).isEqualTo(-6);
+        assertThat(game.consequence().text()).contains("rusty nail");
+    }
+
+    @Test
+    void tryingTheLockedDoorTooOftenKillsThePlayer() {
+        String gameId = gameService.start("the-prisoner").id();
+
+        GameView game = null;
+        for (int attempt = 0; attempt < 4; attempt++) {
+            gameService.choose(gameId, 0);
+            game = gameService.choose(gameId, 0);
+        }
+
+        assertThat(game.status()).isEqualTo(GameStatus.DEAD);
+        assertThat(game.health()).isZero();
+        assertThat(game.section().id()).isEqualTo(500);
+        assertThat(game.section().options()).isEmpty();
+        assertThatThrownBy(() -> gameService.choose(gameId, 0)).isInstanceOf(InvalidChoiceException.class);
     }
 
     @Test

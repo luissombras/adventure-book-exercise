@@ -37,6 +37,10 @@ cd frontend && npm test
 | GET | `/api/games/{id}` | Current state of a game. |
 | POST | `/api/games/{id}/choices` `{"optionIndex"}` | Take an option of the current section (0-based). `409` if the section has no such option or the game is over. |
 
+A game is returned as `{ id, bookId, bookTitle, status, health, maxHealth, consequence, section }`, where `status` is
+`IN_PROGRESS`, `FINISHED` or `DEAD`, and `consequence` is the result of the last choice (`{ text, healthChange }`) or
+`null`.
+
 Errors use Problem Details (`application/problem+json`); a `422` also lists the book's validation errors.
 
 ## Decisions
@@ -75,7 +79,16 @@ left out, and so is the category filter: no book has a category.
 current section and decides where the player goes. That keeps the rules in one place and testable in Java, and it
 is where health and consequences (objective 3) and saved progress (objective 4) will plug in. Games are kept in
 memory, so they are lost when the backend restarts, and refreshing the game page starts a new game until saving
-exists.
+exists. Games are never deleted either: fine for a local exercise, but a real deployment would expire them after a
+while of inactivity or store them in a database. A choice is applied atomically (`ConcurrentHashMap.computeIfPresent`),
+so two requests for the same game can't both act on the same section.
+
+**Health.** The player starts with 10 health. `LOSE_HEALTH` and `GAIN_HEALTH` consequences move it, and it stays
+between 0 and 10: the brief only gives the starting value, and a cap keeps potions from stacking up. At 0 the player
+dies on the section where they made the choice, without moving to the option's section, since that text assumes they
+survived. Death wins over an ending: losing the last health point on the way to an `END` section is still death.
+The game reports the change that was actually applied, so a potion at full health shows no gain and a fatal blow
+shows only the health that was left.
 
 **Sections have no titles in the data**, so the game screen shows the section number instead of the titles in the
 design.

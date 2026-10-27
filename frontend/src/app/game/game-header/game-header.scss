@@ -26,6 +26,10 @@
   }
 }
 
+.game-header__health {
+  justify-self: end;
+}
+
 .game-header__title {
   display: inline-flex;
   align-items: center;
@@ -42,5 +46,9 @@
   .game-header {
     grid-template-columns: 1fr;
     justify-items: start;
+  }
+
+  .game-header__health {
+    justify-self: start;
   }
 }

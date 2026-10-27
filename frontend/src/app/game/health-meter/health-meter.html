@@ -1,0 +1,14 @@
+<div
+  class="health"
+  [class.health--low]="low()"
+  role="meter"
+  aria-label="Health"
+  [attr.aria-valuenow]="health()"
+  aria-valuemin="0"
+  [attr.aria-valuemax]="max()"
+  [attr.aria-valuetext]="health() + ' of ' + max()"
+>
+  <app-icon name="heart" class="health__icon" />
+  <span class="health__bar"><span class="health__fill" [style.width.%]="percent()"></span></span>
+  <span class="health__value">{{ health() }} / {{ max() }}</span>
+</div>
