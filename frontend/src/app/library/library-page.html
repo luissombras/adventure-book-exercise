@@ -7,7 +7,7 @@
     </p>
     <p class="hero__count">
       <app-icon name="book-open" class="hero__icon" />
-      {{ totalBooks() }} Epic {{ totalBooks() === 1 ? 'Adventure' : 'Adventures' }} Available
+      {{ allBooks().length }} Epic {{ allBooks().length === 1 ? 'Adventure' : 'Adventures' }} Available
       <app-icon name="sparkles" class="hero__icon" />
     </p>
   </div>
@@ -28,7 +28,7 @@
       class="search__input"
       type="search"
       placeholder="Search adventures..."
-      aria-label="Search adventures by title, author or category"
+      aria-label="Search adventures by title or author"
       [value]="search()"
       (input)="onSearch($event)"
     />
@@ -36,17 +36,6 @@
 
   <div class="filters" role="group" aria-label="Filters">
     <span class="filters__label"><app-icon name="filter" /> Filters:</span>
-    @for (category of categories(); track category) {
-      <button
-        type="button"
-        class="chip"
-        [class.chip--active]="selectedCategories().includes(category)"
-        [attr.aria-pressed]="selectedCategories().includes(category)"
-        (click)="toggleCategory(category)"
-      >
-        {{ category }}
-      </button>
-    }
     @for (difficulty of difficulties; track difficulty) {
       <button
         type="button"
@@ -68,7 +57,7 @@
       <p>We couldn't reach the library. Is the backend running?</p>
       <button type="button" class="chip" (click)="reload()">Try again</button>
     </div>
-  } @else if (loading() && books().length === 0) {
+  } @else if (loading()) {
     <p class="state">Dusting off the shelves...</p>
   } @else if (books().length === 0) {
     <div class="state">
@@ -78,7 +67,7 @@
       }
     </div>
   } @else {
-    <div class="grid" [class.grid--loading]="loading()">
+    <div class="grid">
       @for (book of books(); track book.id) {
         <app-book-card [book]="book" />
       }

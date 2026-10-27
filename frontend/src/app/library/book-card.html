@@ -13,9 +13,6 @@
     @if (b.difficulty) {
       <span class="badge" [class]="'badge--' + b.difficulty.toLowerCase()">{{ b.difficulty | titlecase }}</span>
     }
-    @if (b.category) {
-      <span class="badge badge--category">{{ b.category }}</span>
-    }
     @if (!b.valid) {
       <span class="badge badge--invalid"><app-icon name="alert" /> Unplayable</span>
     }

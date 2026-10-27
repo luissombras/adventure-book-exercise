@@ -1,14 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs';
-import { BookFilters, BookSummary, DIFFICULTIES, Difficulty } from '../books/book.model';
-import { BOOKS_URL, booksRequest, hasActiveFilters } from '../books/books-api';
+import { BookSummary, DIFFICULTIES, Difficulty } from '../books/book.model';
 import { Icon } from '../shared/icon';
 import { BookCard } from './book-card';
-
-const SEARCH_DEBOUNCE_MS = 250;
 
 @Component({
   selector: 'app-library-page',
@@ -22,45 +17,23 @@ export class LibraryPage {
 
   protected readonly search = signal('');
   protected readonly selectedDifficulties = signal<Difficulty[]>([]);
-  protected readonly selectedCategories = signal<string[]>([]);
 
-  private readonly debouncedSearch = toSignal(
-    toObservable(this.search).pipe(
-      debounceTime(SEARCH_DEBOUNCE_MS),
-      map((value) => value.trim()),
-      distinctUntilChanged(),
-    ),
-    { initialValue: '' },
-  );
+  private readonly library = httpResource<BookSummary[]>(() => '/api/books');
 
-  private readonly filters = computed<BookFilters>(() => ({
-    search: this.debouncedSearch(),
-    difficulties: this.selectedDifficulties(),
-    categories: this.selectedCategories(),
-  }));
+  protected readonly loading = this.library.isLoading;
+  protected readonly failed = computed(() => !!this.library.error());
+  protected readonly allBooks = computed(() => (this.library.hasValue() ? this.library.value() : []));
 
-  protected readonly filtering = computed(() => hasActiveFilters(this.filters()));
+  protected readonly filtering = computed(() => this.search().trim() !== '' || this.selectedDifficulties().length > 0);
 
-  private readonly catalog = httpResource<BookSummary[]>(() => BOOKS_URL, { defaultValue: [] });
-
-  private readonly filtered = httpResource<BookSummary[]>(
-    () => (this.filtering() ? booksRequest(this.filters()) : undefined),
-    { defaultValue: [] },
-  );
-
-  private readonly allBooks = computed(() => (this.catalog.hasValue() ? this.catalog.value() : []));
-  private readonly filteredBooks = computed(() => (this.filtered.hasValue() ? this.filtered.value() : []));
-
-  protected readonly books = computed(() => (this.filtering() ? this.filteredBooks() : this.allBooks()));
-  protected readonly loading = computed(() => this.catalog.isLoading() || this.filtered.isLoading());
-  protected readonly failed = computed(() => !!this.catalog.error() || !!this.filtered.error());
-  protected readonly totalBooks = computed(() => this.allBooks().length);
-
-  protected readonly categories = computed(() => {
-    const categories = this.allBooks()
-      .map((book) => book.category)
-      .filter((category): category is string => !!category);
-    return [...new Set(categories)].sort((a, b) => a.localeCompare(b));
+  protected readonly books = computed(() => {
+    const text = this.search().trim().toLowerCase();
+    const difficulties = this.selectedDifficulties();
+    return this.allBooks().filter(
+      (book) =>
+        (!text || `${book.title} ${book.author}`.toLowerCase().includes(text)) &&
+        (!difficulties.length || (book.difficulty !== null && difficulties.includes(book.difficulty))),
+    );
   });
 
   protected onSearch(event: Event): void {
@@ -68,25 +41,17 @@ export class LibraryPage {
   }
 
   protected toggleDifficulty(difficulty: Difficulty): void {
-    this.selectedDifficulties.update((selected) => toggle(selected, difficulty));
-  }
-
-  protected toggleCategory(category: string): void {
-    this.selectedCategories.update((selected) => toggle(selected, category));
+    this.selectedDifficulties.update((selected) =>
+      selected.includes(difficulty) ? selected.filter((d) => d !== difficulty) : [...selected, difficulty],
+    );
   }
 
   protected clearFilters(): void {
     this.search.set('');
     this.selectedDifficulties.set([]);
-    this.selectedCategories.set([]);
   }
 
   protected reload(): void {
-    this.catalog.reload();
-    this.filtered.reload();
+    this.library.reload();
   }
-}
-
-function toggle<T>(values: T[], value: T): T[] {
-  return values.includes(value) ? values.filter((v) => v !== value) : [...values, value];
 }

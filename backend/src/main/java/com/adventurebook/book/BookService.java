@@ -15,9 +15,8 @@ public class BookService {
         this.validator = validator;
     }
 
-    public List<BookSummary> search(BookSearch search) {
+    public List<BookSummary> listBooks() {
         return repository.findAll().stream()
-                .filter(search::matches)
                 .map(book -> BookSummary.of(book, validator.validate(book)))
                 .toList();
     }

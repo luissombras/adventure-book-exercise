@@ -32,7 +32,7 @@ cd frontend && npm test
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/books?search=&difficulty=&category=` | Library, with each book's validation errors. `difficulty` and `category` can be repeated. |
+| GET | `/api/books` | Library, with each book's validation errors. |
 
 ## Decisions
 
@@ -41,6 +41,9 @@ leading to a section that doesn't exist, or has a non-ending section without opt
 sections reachable from the beginning are considered: a dead section nobody can get to can't block a game.
 
 **Invalid books stay in the library**, marked as unplayable with the reasons, instead of being hidden.
+
+**Search and filters run in the browser.** The whole library fits in one response, so the page loads it once
+and filters it locally. That would move to the API, with pagination, if the library grew large.
 
 With these rules, the bundled books end up as:
 
@@ -52,9 +55,9 @@ With these rules, the bundled books end up as:
 | Dragon Quest | Not loaded: the file is empty |
 
 **Data quirks handled when loading:** section ids written as strings (`"500"`), consequence values as strings
-(`"4"`), and the blank top-level `"type"` in Pirates, read as the book category. A file that can't be parsed is
-logged and skipped.
+(`"4"`). Unknown fields such as the blank top-level `"type"` in Pirates are ignored. A file that can't be parsed
+is logged and skipped.
 
 **Card details.** The JSON files have no description, so the card shows the text of the opening section. The
 section count replaces the "chapters" shown in the design. Reading time and tags aren't in the data, so they're
-left out.
+left out, and so is the category filter: no book has a category.

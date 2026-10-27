@@ -38,11 +38,6 @@ class BookLoaderTest {
     }
 
     @Test
-    void treatsBlankCategoryAsMissing() {
-        assertThat(loadBundled("pirates-jade-sea").category()).isNull();
-    }
-
-    @Test
     void sectionWithoutOptionsHasEmptyList() {
         assertThat(loadBundled("the-prisoner").findSection(666).orElseThrow().options()).isEmpty();
     }

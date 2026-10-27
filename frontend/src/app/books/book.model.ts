@@ -8,14 +8,7 @@ export interface BookSummary {
   author: string;
   description: string | null;
   difficulty: Difficulty | null;
-  category: string | null;
   sectionCount: number;
   valid: boolean;
   errors: string[];
-}
-
-export interface BookFilters {
-  search: string;
-  difficulties: Difficulty[];
-  categories: string[];
 }

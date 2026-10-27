@@ -12,7 +12,6 @@ function book(id: string, overrides: Partial<BookSummary> = {}): BookSummary {
     author: 'Someone',
     description: null,
     difficulty: 'EASY',
-    category: null,
     sectionCount: 3,
     valid: true,
     errors: [],
@@ -49,27 +48,29 @@ describe('LibraryPage', () => {
     expect(element.querySelector('.hero__count')?.textContent).toContain('2 Epic Adventures Available');
   });
 
-  it('builds the category chips from the books', async () => {
-    const fixture = await renderWith([book('a', { category: 'Fantasy' }), book('b', { category: 'Adventure' }), book('c')]);
-
-    const chips = [...(fixture.nativeElement as HTMLElement).querySelectorAll('.filters .chip')].map((c) => c.textContent?.trim());
-
-    expect(chips).toEqual(['Adventure', 'Fantasy', 'Easy', 'Medium', 'Hard']);
-  });
-
-  it('asks the API for the selected difficulty', async () => {
+  it('filters by difficulty without asking the API again', async () => {
     const fixture = await renderWith([book('a'), book('b', { difficulty: 'HARD' })]);
     const element = fixture.nativeElement as HTMLElement;
 
     const hardChip = [...element.querySelectorAll<HTMLButtonElement>('.filters .chip')].find((c) => c.textContent?.trim() === 'Hard');
     hardChip!.click();
-    TestBed.tick();
-
-    httpMock.expectOne((req) => req.url === '/api/books' && req.params.getAll('difficulty')?.join() === 'HARD').flush([book('b', { difficulty: 'HARD' })]);
     await fixture.whenStable();
 
     expect(element.querySelectorAll('app-book-card').length).toBe(1);
     expect(hardChip!.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('searches titles and authors ignoring case', async () => {
+    const fixture = await renderWith([book('The Prisoner'), book('Pirates', { author: 'Marina Blackwood' })]);
+    const element = fixture.nativeElement as HTMLElement;
+    const input = element.querySelector<HTMLInputElement>('.search__input')!;
+
+    input.value = 'BLACKWOOD';
+    input.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+
+    expect(element.querySelectorAll('app-book-card').length).toBe(1);
+    expect(element.querySelector('app-book-card h3')?.textContent).toContain('Pirates');
   });
 
   it('tells the user when nothing matches', async () => {

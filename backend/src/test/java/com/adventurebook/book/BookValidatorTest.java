@@ -114,7 +114,7 @@ class BookValidatorTest {
     }
 
     private static Book book(Section... sections) {
-        return new Book("test", "Test", "Tester", null, Difficulty.EASY, null, Arrays.asList(sections));
+        return new Book("test", "Test", "Tester", Difficulty.EASY, Arrays.asList(sections));
     }
 
     private static Section section(int id, SectionType type, int... gotoIds) {

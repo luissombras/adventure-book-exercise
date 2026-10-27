@@ -1,29 +1,19 @@
 package com.adventurebook.book;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 import java.util.Optional;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record Book(
-        String id,
-        String title,
-        String author,
-        String description,
-        Difficulty difficulty,
-        @JsonAlias("type") String category,
-        List<Section> sections) {
+public record Book(String id, String title, String author, Difficulty difficulty, List<Section> sections) {
 
     public Book {
         sections = sections == null ? List.of() : List.copyOf(sections);
-        description = blankToNull(description);
-        category = blankToNull(category);
     }
 
     public Book withId(String newId) {
-        return new Book(newId, title, author, description, difficulty, category, sections);
+        return new Book(newId, title, author, difficulty, sections);
     }
 
     public Optional<Section> findSection(int sectionId) {
@@ -32,9 +22,5 @@ public record Book(
 
     public Optional<Section> beginning() {
         return sections.stream().filter(s -> s.type() == SectionType.BEGIN).findFirst();
-    }
-
-    private static String blankToNull(String value) {
-        return value == null || value.isBlank() ? null : value;
     }
 }

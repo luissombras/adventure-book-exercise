@@ -9,7 +9,6 @@ const prisoner: BookSummary = {
   author: 'Daniel El Fuego',
   description: 'You wake up in what seems to be a dark prison cell.',
   difficulty: 'HARD',
-  category: null,
   sectionCount: 6,
   valid: true,
   errors: [],
