@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,9 +43,7 @@ public class BookLoader {
 
     private Resource[] findResources() {
         try {
-            Resource[] resources = resolver.getResources(location);
-            Arrays.sort(resources, Comparator.comparing(Resource::getFilename, Comparator.nullsLast(String::compareTo)));
-            return resources;
+            return resolver.getResources(location);
         } catch (IOException e) {
             throw new UncheckedIOException("Could not list book files at " + location, e);
         }
@@ -64,7 +60,7 @@ public class BookLoader {
         }
     }
 
-    static String idFromFileName(String fileName) {
+    private static String idFromFileName(String fileName) {
         return fileName.replaceFirst("\\.json$", "");
     }
 }

@@ -16,7 +16,7 @@ class BookLoaderTest {
         List<Book> books = new BookLoader(jsonMapper, "classpath:books/*.json").loadAll();
 
         assertThat(books).extracting(Book::id)
-                .containsExactly("crystal-caverns", "pirates-jade-sea", "the-prisoner");
+                .containsExactlyInAnyOrder("crystal-caverns", "pirates-jade-sea", "the-prisoner");
     }
 
     @Test
