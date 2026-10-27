@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 const ICONS = {
+  'arrow-left': ['M19 12H5', 'M12 19l-7-7 7-7'],
   'book-open': ['M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z', 'M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z'],
   search: ['M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z', 'M21 21l-4.3-4.3'],
   filter: ['M22 3H2l8 9.46V19l4 2v-8.54z'],

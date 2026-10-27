@@ -1,0 +1,6 @@
+<header class="game-header">
+  <a class="game-header__back" routerLink="/"><app-icon name="arrow-left" /> Back to Library</a>
+  @if (bookTitle()) {
+    <span class="game-header__title"><app-icon name="book-open" /> {{ bookTitle() }}</span>
+  }
+</header>
